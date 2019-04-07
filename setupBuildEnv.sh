@@ -4,14 +4,17 @@
 #
 #/ Usage: setupBuildEnv [OPTIONS]...
 #/
-#/ 
 #/ OPTIONS  
 #/   -h, --help
 #/                Print this help message
+#/   -n, --name
+#/                The user name for Git
+#/   -e, --email
+#/                The user email for Git
 #/
 #/ EXAMPLES
 #/   setupBuildEnv -h
-#/   setupBuildEnv
+#/   setupBuildEnv -n "Full Name" -e "email"
 #/  
 
 # don't hide errors within pipes
@@ -50,6 +53,8 @@ _setupBuildEnv() {
       log -i "Your current distro is currently not yet supported.  Feel free to ensure all the required packages get installed then add it to the list!"
       ;;
   esac
+
+  "$SCRIPT_DIR"/setup-scripts/setupGit.sh -n "$user_name" -e "$user_email"
 }
 
 # Show setup build environment usage
@@ -61,23 +66,63 @@ _setupBuildEnvUsage() {
 #
 # Sets up the computer for building Android ROMs
 setupBuildEnv(){
+  local user_email
+  local user_name
+
   local action
-  if [[ ${#} -eq 0 ]]; then
-    _setupBuildEnv
-  else
-    while [[ $# -gt 0 ]]; do
-      action="$1"
-      case "$action" in
-        -h|--help)
-          shift
-          _setupBuildEnvUsage
-          exit 0
-         ;;
-        *) log -e "Unknown arguments passed"; _setupBuildEnvUsage; exit 128 ;;
-      esac
-    done
-    _setupBuildEnv
+  while [[ $# -gt 0 ]]; do
+    action="$1"
+    if [[ "$action" != '-'* ]]; then
+      shift
+      continue
+    fi
+    case "$action" in
+      -h|--help)
+        shift
+        _setupBuildEnvUsage
+        exit 0
+        ;;
+      -e|--email)
+        local email="$2"
+        shift # past argument
+        if [[ "$email" != '-'* ]]; then
+          shift # past value
+          if [[ -n $email && "$email" != " " ]]; then
+            user_email="$email"
+          else
+            log -w "Empty user email parameter"
+          fi
+        else
+          log -w "No user email parameter specified"
+        fi
+        ;;
+      -n|--name)
+        local name="$2"
+        shift # past argument
+        if [[ "$name" != '-'* ]]; then
+          shift # past value
+          if [[ -n $name && "$name" != " " ]]; then
+            user_name="$name"
+          else
+            log -w "Empty user name parameter"
+          fi
+        else
+          log -w "No user name parameter specified"
+        fi
+        ;;
+      *) log -w "Unknown argument passed: $action. Skipping"
+        shift # past argument
+        ;;
+    esac
+  done
+
+  # Check mandatory params set
+  if [[ ! -v user_email || ! -v user_name ]]; then
+    log -e "User email and user name must be specified for git"
+    _setupBuildEnvUsage
+    exit 1
   fi
+  _setupBuildEnv
 }
 
 err_report() {

@@ -39,11 +39,6 @@ IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
 #
 # Sets up a rom repo for building
 _setupRomRepo() {
-  if [[ ! -v top_dir ]]; then
-    log -e "Build top directory must be specified"
-    exit 1
-  fi
-
   # Set build top dir
   setTopDir -d "$top_dir" || exit $?
 
@@ -76,87 +71,93 @@ setupRomRepo(){
     
   local action
   while [[ $# -gt 0 ]]; do
-      action="$1"
-      if [[ "$action" != '-'* ]]; then
+    action="$1"
+    if [[ "$action" != '-'* ]]; then
+      shift
+      continue
+    fi
+    case $action in
+      -h|--help)
         shift
-        continue
-      fi
-      case $action in
-        -h|--help)
-          shift
-          _setupRomRepoUsage
-          exit 0
-         ;;
-        -d|--directory)
-          local dir="$2"
-          shift # past argument
-          if [[ "$dir" != '-'* ]]; then
-            shift # past value
-            if [[ -n $dir && "$dir" != " " ]]; then
-              top_dir="$dir"
-            else 
-              log -w "No base directory parameter specified"
-            fi
+        _setupRomRepoUsage
+        exit 0
+        ;;
+      -d|--directory)
+        local dir="$2"
+        shift # past argument
+        if [[ "$dir" != '-'* ]]; then
+          shift # past value
+          if [[ -n $dir && "$dir" != " " ]]; then
+            top_dir="$dir"
+          else 
+            log -w "No base directory parameter specified"
           fi
-          ;;
-        -m|--manifest)
-          local man=$2
-          shift # past argument
-          if [[ "$man" != '-'* ]]; then
-            shift # past value
-            if [[ -n $man && "$man" != " " ]]; then
-              manifest_name="$man"
-            else
-              log -w "Empty manifest name parameter"
-            fi
+        fi
+        ;;
+      -m|--manifest)
+        local man=$2
+        shift # past argument
+        if [[ "$man" != '-'* ]]; then
+          shift # past value
+          if [[ -n $man && "$man" != " " ]]; then
+            manifest_name="$man"
           else
-            log -w "No manifest name parameter specified"
+            log -w "Empty manifest name parameter"
           fi
-          ;;
-        -a|--account)
-          local acc=$2
-          shift # past argument
-          if [[ "$acc" != '-'* ]]; then
-            shift # past value
-            if [[ -n $acc && "$acc" != " " ]]; then
-              account_name="$acc"
-            else
-              log -w "Empty account name parameter"
-            fi
+        else
+          log -w "No manifest name parameter specified"
+        fi
+        ;;
+      -a|--account)
+        local acc=$2
+        shift # past argument
+        if [[ "$acc" != '-'* ]]; then
+          shift # past value
+          if [[ -n $acc && "$acc" != " " ]]; then
+            account_name="$acc"
           else
-            log -w "No account name parameter specified"
+            log -w "Empty account name parameter"
           fi
-          ;;
-        -b|--branch)
-          local branch=$2
-          shift # past argument
-          if [[ "$branch" != '-'* ]]; then
-            shift # past value
-            if [[ -n $branch && "$branch" != " " ]]; then
-              branch="$branch"
-            else
-              log -w "Empty branch parameter"
-            fi
+        else
+          log -w "No account name parameter specified"
+        fi
+        ;;
+      -b|--branch)
+        local branch=$2
+        shift # past argument
+        if [[ "$branch" != '-'* ]]; then
+          shift # past value
+          if [[ -n $branch && "$branch" != " " ]]; then
+            branch="$branch"
           else
-            log -w "No branch parameter specified"
+            log -w "Empty branch parameter"
           fi
-          ;;
-        --sync) 
-          local val="$2"
-          shift # past argument
-          if [[ "$val" != '-'* ]]; then
-            sync_repo="$val"
-            shift # past value
-          else
-            sync_repo="true"
-          fi
-          ;;
-        *) 
-          log -w "Unknown argument passed: $action. Skipping"
-          shift # past argument
-          ;;
-      esac
-    done
+        else
+          log -w "No branch parameter specified"
+        fi
+        ;;
+      --sync) 
+        local val="$2"
+        shift # past argument
+        if [[ "$val" != '-'* ]]; then
+          sync_repo="$val"
+          shift # past value
+        else
+          sync_repo="true"
+        fi
+        ;;
+      *) 
+        log -w "Unknown argument passed: $action. Skipping"
+        shift # past argument
+        ;;
+    esac
+  done
+  
+  if [[ ! -v top_dir ]]; then
+    log -e "Build top directory must be specified"
+    _setupRomRepoUsage
+    exit 1
+  fi
   _setupRomRepo
 }
 

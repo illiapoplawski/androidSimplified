@@ -97,11 +97,6 @@ _buildRom() {
   # Disable Swap
   "$SCRIPT_DIR"/build-scripts/setupSwap.sh -e "false" || exit $?
 
-  if [[ ! -v top_dir ]]; then
-    log -e "Build top directory must be specified"
-    exit 1
-  fi
-
   # Set build top dir
   setTopDir -d "$top_dir" || exit $?
 
@@ -624,9 +619,19 @@ buildRom(){
           log -w "No keep parameter specified"
         fi
         ;;
-      *) log -e "Unknown arguments passed"; _buildRomUsage; exit 128 ;;
+      *) log -w "Unknown argument passed: $action. Skipping"
+        shift # past argument
+        ;;
     esac
   done
+  if [[ ! -v top_dir ]]; then
+    log -e "Rom top directory not specified"
+    _buildRomUsage
+    exit 1
+  fi
+  if [[ ! -v patch_file ]]; then
+    log -w "Patch file not specified, Patches will not be applied"
+  fi
   _buildRom
 }
 
