@@ -1,0 +1,35 @@
+#/ PATCH FILE SYNTAX
+#/ Comment
+#/   #Comment line
+#/
+#/ Cherry pick specific change-ids
+#/   123456 123457
+#/
+#/ Do a github checkout of HEAD
+#/   checkout local/path GithubAccount/repoName refs/for/9
+#/
+#/ Do a github checkout of specific commit
+#/   checkout local/path GithubAccount/repoName refs/for/9 commitHash
+#/
+#/ Do a github cherrypick of specific commit
+#/   cherrypick local/path GithubAccount/repoName refs/for/9 commitHash
+#/
+#/ Do a github revert of specific commit
+#/   revert local/path commitHash
+#/
+#/ Cherry pick all changes with specific topic
+#/   topic topic-name
+#/
+#/ Apply local patch
+#/   local local/path 0001-patch-file.patch
+#/
+942 1451 1452 1497
+# Launcher
+#1505 1506 1507 1508 1509 1510 1511
+# 1477
+topic angler-ims
+topic weather-update
+topic settings-qs
+# topic qcom-wfd
+# dual-sim
+#revert device/huawei/angler b96c7c8c456a2ae9fee6f2aa9ea95d9177bd4fb0
