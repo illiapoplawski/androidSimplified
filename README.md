@@ -9,13 +9,16 @@ Run the scripts in the following order to setup your environment and build the r
 2) setupRomRepoGUI.sh
 3) buildRomGUI.sh
 
-# Auto Mode*
+# Auto Mode&ast;
 1) setupBuildEnv.sh
 2) setupRomRepo.sh -d <path/to/root/dir>
-3) buildRom.sh -t <path/to/root/dir> -p <path/to/patch/file**>
-* Rather than pass custom parameters each time, the defaults can be set in the scripts and then the commands can be run with no arguments.
-** If the patch file argument is not set then no patches will be applied.
+3) buildRom.sh -t <path/to/root/dir> -p <path/to/patch/file>&ast;&ast;
 
+&ast; Rather than pass custom parameters each time, the defaults can be set in the scripts and then the commands can be run with no arguments.
+
+&ast;&ast; If the patch file argument is not set then no patches will be applied.
+
+# General Info
 Each script in any folder that is executable can take the <-h> argument to see the functionality of the individual script.
 
 For scripts that must be sourced, run "source script.sh" then run scriptname.sh -h to see the help menu for the script.
