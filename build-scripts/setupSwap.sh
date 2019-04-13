@@ -105,7 +105,7 @@ _setupSwap(){
     elif [[ "$enable_swap" == "true" ]]; then
       log -i "Swap is already enabled"
     else
-      if "$SCRIPT_DIR"/userFunctions.sh getYesNo -t "Setup Swap" -d "Would you like to disable swap?\nIt is recommended to disable it for building AOSP."; then
+      if "$(dirname "$SCRIPT_DIR")"/utilities/userFunctions.sh getYesNo -t "Setup Swap" -d "Would you like to disable swap?\nIt is recommended to disable it for building AOSP."; then
         _grabSudoGUI || exit $?
         _disableSwap
         _clearSudoCredentials
@@ -120,7 +120,7 @@ _setupSwap(){
     elif [[ "$enable_swap" == "true" ]]; then
       _enableSwap
     else
-      if "$SCRIPT_DIR"/userFunctions.sh getYesNo -t "Setup Swap" -d "Swap is currently disabled.  Would you like to enable swap?\nIt is recommended to leave it disabled it for building AOSP and re-enable it afterwards." -i "no"; then
+      if "$(dirname "$SCRIPT_DIR")"/utilities/userFunctions.sh getYesNo -t "Setup Swap" -d "Swap is currently disabled.  Would you like to enable swap?\nIt is recommended to leave it disabled it for building AOSP and re-enable it afterwards." -i "no"; then
         _grabSudoGUI || exit $?
         log -w "Enabling swap"
         _enableSwapQuiet
