@@ -263,7 +263,7 @@ buildRom(){
   local changelog_days="7"
   local upload_build="true"
   local upload_dir="$HOME/MEGA/StatiXOS"
-  local keep_count="3"
+  local keep_count="4"
 
   local action
   while [[ $# -gt 0 ]]; do
