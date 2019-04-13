@@ -127,9 +127,11 @@ _buildRomGUI() {
   # Generate MD5
   "$SCRIPT_DIR"/build-scripts/generateMD5.sh -f "$ANDROID_PRODUCT_OUT"/"$file_name" || exit $?
 
-  # Generate Changelog
-  "$SCRIPT_DIR"/build-scripts/generateChangelog.sh -o "$ANDROID_PRODUCT_OUT" -n "$file_name" || exit $?
-
+  "$SCRIPT_DIR"/utilities/userFunctions.sh getYesNo -t "Generate Changelog" -d "Would you like to generate a changelog?" -i "yes" && {
+    # Generate Changelog
+    "$SCRIPT_DIR"/build-scripts/generateChangelog.sh -o "$ANDROID_PRODUCT_OUT" -n "$file_name" || exit $?
+  }
+  
   "$SCRIPT_DIR"/utilities/userFunctions.sh getYesNo -t "Upload ROM" -d "Would you like to upload the ROM?" -i "yes" && {
     # Set upload dir
     setUploadDir || exit $?
