@@ -31,6 +31,8 @@ set -o pipefail
 [[ -v SCRIPT_DIR ]]  || readonly SCRIPT_DIR="$( cd "$( dirname "$SCRIPT_NAME" )" && pwd )"
 UPLOAD_LOG=$(dirname "$SCRIPT_DIR")/log/upload.log
 
+mkdir -p "${UPLOAD_LOG%/*}"
+
 IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
 
 . "$(dirname "$SCRIPT_DIR")"/utilities/logging.sh

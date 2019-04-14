@@ -37,6 +37,8 @@ set -o pipefail
 [[ -v SCRIPT_DIR ]]  || readonly SCRIPT_DIR="$( cd "$( dirname "$SCRIPT_NAME" )" && pwd )"
 BUILD_LOG=$(dirname "$SCRIPT_DIR")/log/build.log
 
+mkdir -p "${BUILD_LOG%/*}"
+
 IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
 
 . "$(dirname "$SCRIPT_DIR")"/utilities/logging.sh

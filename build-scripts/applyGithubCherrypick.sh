@@ -39,6 +39,8 @@ set -o pipefail
 [[ -v SCRIPT_DIR ]]  || readonly SCRIPT_DIR="$( cd "$( dirname "$SCRIPT_NAME" )" && pwd )"
 REPOPICK_LOG="$(dirname "$SCRIPT_DIR")"/log/repopick.log
 
+mkdir -p "${REPOPICK_LOG%/*}"
+
 IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
 
 . "$(dirname "$SCRIPT_DIR")"/utilities/logging.sh

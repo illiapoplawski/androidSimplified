@@ -32,6 +32,8 @@ set -o pipefail
 [[ -v SCRIPT_DIR ]]  || readonly SCRIPT_DIR="$( cd "$( dirname "$SCRIPT_NAME" )" && pwd )"
 GIT_STATUS_LOG="$(dirname "$SCRIPT_DIR")"/log/git_status.log
 
+mkdir -p "${GIT_STATUS_LOG%/*}"
+
 IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
 
 . "$(dirname "$SCRIPT_DIR")"/utilities/logging.sh

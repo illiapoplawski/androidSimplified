@@ -29,6 +29,8 @@ set -o pipefail
 [[ -v SCRIPT_DIR ]]  || readonly SCRIPT_DIR="$( cd "$( dirname "$SCRIPT_NAME" )" && pwd )"
 SYNC_LOG="$(dirname "$SCRIPT_DIR")"/log/sync.log
 
+mkdir -p "${SYNC_LOG%/*}"
+
 IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
 
 . "$(dirname "$SCRIPT_DIR")"/utilities/logging.sh
