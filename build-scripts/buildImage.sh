@@ -19,14 +19,14 @@
 #/                Device to build for
 #/   -n, --name <name>
 #/                Device to build for
+#/   -v, --variant <variant>
+#/                Build variant (user | userdebug | eng)
 #/   -t, --type <type>
-#/                Build type (user | userdebug | eng)
-#/   -s, --statixtype <type>
-#/                Statix Build type (NUCLEAR | UNOFFICIAL | OFFICIAL)
+#/                Build type (NUCLEAR | UNOFFICIAL | OFFICIAL)
 #/
 #/ EXAMPLES
 #/   buildImage
-#/   buildImage -d <path> -i <image> -n <name> -d <device> -t <type>
+#/   buildImage -d <path> -i <image> -n <name> -d <device> -t <type> -v <variant>
 #/   buildImage --help
 #/
 
@@ -307,10 +307,10 @@ buildImage() {
             if [[ -n $var && "$var" != " " ]]; then
               build_variant="$var"
             else
-              log -w "Empty build type parameter"
+              log -w "Empty build variant parameter"
             fi
           else
-            log -w "No build type parameter specified"
+            log -w "No build variant parameter specified"
           fi
           ;;
         -t|--type)
