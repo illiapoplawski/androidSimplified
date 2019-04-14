@@ -29,8 +29,8 @@ IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
 . "$SCRIPT_DIR"/build-scripts/setupCCache.sh
 . "$SCRIPT_DIR"/build-scripts/setupJack.sh
 . "$SCRIPT_DIR"/build-scripts/setupNinja.sh
-. "$SCRIPT_DIR"/build-scripts/setStatixBuildType.sh
 . "$SCRIPT_DIR"/build-scripts/setBuildType.sh
+. "$SCRIPT_DIR"/build-scripts/setBuildVariant.sh
 . "$SCRIPT_DIR"/build-scripts/setImageType.sh
 . "$SCRIPT_DIR"/build-scripts/setDeviceName.sh
 . "$SCRIPT_DIR"/build-scripts/setRomName.sh
@@ -90,11 +90,11 @@ _buildRomGUI() {
   # Set device name
   setDeviceName || exit $?
 
-  # Set statix build type
-  setStatixBuildType || exit $?
-
   # Set build type
   setBuildType || exit $?
+
+  # Set build variant
+  setBuildVariant || exit $?
 
   # Set image type
   setImageType || exit $?

@@ -2,7 +2,7 @@
 #
 # Author: Illia Poplawski <illia.poplawski@gmail.com>
 #
-#/ Sets the build type to build
+#/ Sets the build type for rom
 #/
 #/  Public Functions:
 #/
@@ -12,7 +12,7 @@
 #/   -h, --help
 #/                Print this help message
 #/   -t, --type <build type>
-#/                Build Type to build ( user | userdebug | eng )
+#/                Build types ( UNOFFICIAL | NUCLEAR | OFFICIAL )
 #/
 #/ EXAMPLES
 #/   setBuildType
@@ -37,30 +37,31 @@ IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
 
 . "$(dirname "$SET_BUILD_TYPE_SCRIPT_DIR")"/utilities/logging.sh
 
-build_types=('eng' 'user' 'userdebug')
+types=('UNOFFICIAL' 'NUCLEAR' 'OFFICIAL')
 
 # Usage: _setBuildType
 #
 # Sets the build type
 _setBuildType() {
-  local eng_opt=('eng' 'Development configuration (additional debugging tools)')
-  local user_opt=('user' 'Limited access for production')
-  local userdebug_opt=('userdebug' 'User with root access and debuggability')
+  local official_opt=('OFFICIAL' 'Signed official build')
+  local unofficial_opt=('UNOFFICIAL' 'Unsigned testing build')
+  local nuclear_opt=('NUCLEAR' 'Unsigned testing build from nuclear group')
 
-  if [[ ( ! -v BUILD_TYPE || -z $BUILD_TYPE || "$BUILD_TYPE" == " " ) &&
+  if [[ ( ! -v STATIX_BUILD_TYPE || -z $STATIX_BUILD_TYPE || "$STATIX_BUILD_TYPE" == " " ) &&
         ( ! -v build_type || -z $build_type || "$build_type" == " " ) ]]; then
-    build_type=$("$(dirname "$SET_BUILD_TYPE_SCRIPT_DIR")"/utilities/userFunctions.sh getOption -t "Setup build type" -i "Choose your build type" -w 70 -o "${user_opt[@]}"  "${userdebug_opt[@]}" "${eng_opt[@]}" ) || {
-      log -e "Setting build type cancelled by user."
-      exit 1
+    build_type=$("$(dirname "$SET_BUILD_TYPE_SCRIPT_DIR")"/utilities/userFunctions.sh getOption -t "Setup build type" -i "Choose your build type" -w 70 -o "${unofficial_opt[@]}"  "${nuclear_opt[@]}" "${official_opt[@]}" ) || {
+      log -e "Build type not set"
+      return 1
     }
   fi
-  if "$(dirname "$SET_BUILD_TYPE_SCRIPT_DIR")"/utilities/arrayFunctions.sh contains -a "${build_types[@]}" -v "$build_type"; then
-    BUILD_TYPE="$build_type"
+
+  if "$(dirname "$SET_BUILD_TYPE_SCRIPT_DIR")"/utilities/arrayFunctions.sh contains -a "${types[@]}" -v "$build_type"; then
+    STATIX_BUILD_TYPE="$build_type"
   else
     log -e "Invalid build type passed"
     return 1
   fi
-  export BUILD_TYPE
+  export STATIX_BUILD_TYPE
 }
 
 # Show set build type usage
@@ -70,10 +71,10 @@ _setBuildTypeUsage() {
 
 # Usage: setBuildType [arg]
 #
-# Sets the build type
+# Sets the build type for rom
 setBuildType(){
   local build_type
-  
+
   local action
   if [[ ${#} -eq 0 ]]; then
     _setBuildType

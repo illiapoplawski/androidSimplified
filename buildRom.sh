@@ -39,10 +39,10 @@
 #/                ROM Name to build
 #/   -dn, --devicename <name>
 #/                Device Name to build
-#/   -sbt, --statixbuildtype <build type>
-#/                Build types ( UNOFFICIAL | NUCLEAR | OFFICIAL )
 #/   -bt, --buildtype <build type>
-#/                Build Type to build ( user | userdebug | eng )
+#/                Build types ( UNOFFICIAL | NUCLEAR | OFFICIAL )
+#/   -v, --buildvariant <build variant>
+#/                Build Variant to build ( user | userdebug | eng )
 #/   -w, --clean <clean type>
 #/                Clean types ( clean | installclean | none )
 #/   -i, --image <image>
@@ -63,7 +63,7 @@
 #/ EXAMPLES
 #/   buildRom -h
 #/   buildRom -t <path/to/top/dir>
-#/   buildRom -t <path/to/top/dir> -o <out/dir> -l <locale> -c true -d <ccache/dir> -s <cache size> -n true -j false --reset --sync -p <path/to/file> -g <gerrit site> --verify -rn <rom name> -dn <device name> -sbt <statix build type> -bt <build type> -w <clean type> -i rom --md5 true --changelog -cd <days> --upload false -u <path/to/upload/dir> -k <archives to keep>
+#/   buildRom -t <path/to/top/dir> -o <out/dir> -l <locale> -c true -d <ccache/dir> -s <cache size> -n true -j false --reset --sync -p <path/to/file> -g <gerrit site> --verify -rn <rom name> -dn <device name> -bt <build type> -v <build variant> -w <clean type> -i rom --md5 true --changelog -cd <days> --upload false -u <path/to/upload/dir> -k <archives to keep>
 #/ 
 
 # don't hide errors within pipes
@@ -170,11 +170,11 @@ _buildRom() {
   # Set device name
   setDeviceName -n "$device_name" || exit $?
 
-  # Set statix build type
-  setStatixBuildType -t "$statix_build_type" || exit $?
-
   # Set build type
   setBuildType -t "$build_type" || exit $?
+
+  # Set build variant
+  setBuildVariant -v "$build_variant" || exit $?
 
   # Set image type
   setImageType -t "$image_type" || exit $?
@@ -254,8 +254,8 @@ buildRom(){
   local verify_git="true"
   local rom_name="statix"
   local device_name="angler"
-  local statix_build_type="NUCLEAR"
-  local build_type="userdebug"
+  local build_type="NUCLEAR"
+  local build_variant="userdebug"
   local clean_type="none"
   local image_type="rom"
   local generate_md5="true"
@@ -491,20 +491,6 @@ buildRom(){
           log -w "No device name parameter specified"
         fi
         ;;
-      -sbt|--statixbuildtype)
-        local typ="$2"
-        shift # past argument
-        if [[ "$typ" != '-'* ]]; then
-          shift # past value
-          if [[ -n $typ && "$typ" != " " ]]; then
-            statix_build_type="$typ"
-          else
-            log -w "Empty statix build type parameter"
-          fi
-        else
-          log -w "No statix build type parameter specified"
-        fi
-        ;;
       -bt|--buildtype)
         local typ="$2"
         shift # past argument
@@ -517,6 +503,20 @@ buildRom(){
           fi
         else
           log -w "No build type parameter specified"
+        fi
+        ;;
+      -v|--buildvariant)
+        local var="$2"
+        shift # past argument
+        if [[ "$var" != '-'* ]]; then
+          shift # past value
+          if [[ -n $var && "$var" != " " ]]; then
+            build_variant="$var"
+          else
+            log -w "Empty build variant parameter"
+          fi
+        else
+          log -w "No build variant parameter specified"
         fi
         ;;
       -w|--clean)

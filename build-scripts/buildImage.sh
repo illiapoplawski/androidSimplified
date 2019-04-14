@@ -45,8 +45,8 @@ IFS=$'\t\n'   # Split on newlines and tabs (but not on spaces)
 . "$(dirname "$SCRIPT_DIR")"/utilities/verifyPythonVenv.sh
 . "$SCRIPT_DIR"/verifyRepopick.sh
 . "$(dirname "$SCRIPT_DIR")"/utilities/setTopDir.sh
-. "$SCRIPT_DIR"/setStatixBuildType.sh
 . "$SCRIPT_DIR"/setBuildType.sh
+. "$SCRIPT_DIR"/setBuildVariant.sh
 . "$SCRIPT_DIR"/setImageType.sh
 . "$SCRIPT_DIR"/setDeviceName.sh
 . "$SCRIPT_DIR"/setRomName.sh
@@ -71,18 +71,18 @@ _buildImage() {
     setDeviceName -n "$device_name" || exit $?
   fi
   
-  if [[ ! -v STATIX_BUILD_TYPE ]]; then
-    # Set statix build type
-    setStatixBuildType -t "$statix_build_type" || exit $?
-  fi
-
   if [[ ! -v BUILD_TYPE ]]; then
     # Set build type
     setBuildType -t "$build_type" || exit $?
   fi
 
+  if [[ ! -v BUILD_VARIANT ]]; then
+    # Set build variant
+    setBuildVariant -v "$build_variant" || exit $?
+  fi
+
   local target
-  target="${ROM_NAME}"_"${DEVICE_NAME}"-"${BUILD_TYPE}"
+  target="${ROM_NAME}"_"${DEVICE_NAME}"-"${BUILD_VARIANT}"
 
   if [[ ! -v IMAGE_TYPE ]]; then
     # Set image type
@@ -226,8 +226,8 @@ buildImage() {
   local image_type
   local device_name
   local rom_name
-  local statix_build_type
   local build_type
+  local build_variant
 
   local action
   if [[ ${#} -eq 0 ]]; then
@@ -299,13 +299,13 @@ buildImage() {
             log -w "No rom name parameter specified"
           fi
           ;;
-        -t|--type)
-          local type="$2"
+        -v|--variant)
+          local var="$2"
           shift # past argument
-          if [[ "$type" != '-'* ]]; then
+          if [[ "$var" != '-'* ]]; then
             shift # past value
-            if [[ -n $type && "$type" != " " ]]; then
-              build_type="$type"
+            if [[ -n $var && "$var" != " " ]]; then
+              build_variant="$var"
             else
               log -w "Empty build type parameter"
             fi
@@ -313,13 +313,13 @@ buildImage() {
             log -w "No build type parameter specified"
           fi
           ;;
-        -s|--statixtype)
+        -t|--type)
           local type="$2"
           shift # past argument
           if [[ "$type" != '-'* ]]; then
             shift # past value
             if [[ -n $type && "$type" != " " ]]; then
-              statix_build_type="$type"
+              build_type="$type"
             else
               log -w "Empty build type parameter"
             fi
